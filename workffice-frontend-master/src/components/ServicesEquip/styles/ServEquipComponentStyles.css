@@ -1,0 +1,48 @@
+.formContainer{
+    width: 100%;
+}
+.titleTop{
+    display: grid;
+    padding-top: 30px;
+}
+
+.cardContainer{
+    width: 100%;
+}
+
+.elementsTitleContainer h2{
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.elementsTypeContainer,
+.elementsNameContainer{
+    margin-bottom: 30px;
+}
+
+.element-name .form-label,
+.type-element-name .form-label{
+    font-size: 20px;
+    color: #133148;
+    font-weight: bold;
+}
+
+.row-form-select .form-select,
+.value-select{
+    font-weight: bold;
+}
+
+.element-name input{
+    border-color: white;
+    border-bottom-color: #DDDDDD;
+}
+
+.buttonContainer{
+    display: flex;
+    justify-content: center;
+}
+
+.buttonContainer button{
+    min-width: 107px;
+}

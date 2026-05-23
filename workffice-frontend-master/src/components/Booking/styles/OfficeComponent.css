@@ -1,0 +1,11 @@
+.text .form-label{
+    font-size: 16px;
+    color: #133148;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.text small {
+    color: #eb5d60;
+    font-size: 20px;
+}

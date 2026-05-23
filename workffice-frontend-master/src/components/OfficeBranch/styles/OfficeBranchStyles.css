@@ -1,0 +1,132 @@
+/* .form-select{
+    background-color: white;
+    border: thin #E3E3E3;
+    border-bottom-style: solid;
+    width: 100%;
+    color: #495057;
+    height: 46px;
+}
+
+.office-name .form-label,
+.sucursal .form-label,
+.office-type .form-label,
+.description .form-label,
+.photos .form-label,
+.price-hour .form-label,
+.services .form-label,
+.equipment .form-label,
+.capacity .form-label,
+.availability .form-label,
+.number-of-tables .form-label,
+.input-time-from .form-label,
+.input-time-to .form-label{
+    color: #133148;
+    font-size: 15px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.office-name input {
+    height: 46px;
+}
+
+.price-hour .input-group {
+    margin-bottom: 0px;
+}
+
+.row-label-services,
+.row-label-equipment {
+    width: 100%;
+    display: block;
+}
+
+.services .form-select,
+.equipment .form-select {
+    width: 80%;
+}
+
+.services .row-form-select,
+.equipment .row-form-select{
+    display: flex;
+    justify-content: space-between;
+}
+
+#servicesButton,
+#equipmentButton {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.input-time-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-time-from,
+.input-time-to {
+    width: 40%;
+}
+
+.button-container{
+    margin-left: 10px;
+}
+
+button .link{
+    color: white;
+    text-decoration: 'none';
+}
+
+.infoDetail {
+    font-size: 17px;
+    color: #EB5D60;
+}
+
+.form-label-description {
+    color: #133148;
+    font-size: 18px;
+}
+
+.react-select {
+    width: '80%';
+}
+
+.carrusel-contenedor {
+    margin-bottom: '3%';
+}
+
+.carrusel-contenedor .slick-arrow {
+    background-color: #133148;
+    color: #133148;
+    height: 35px;
+    width: 35px;
+    border-radius: 100px;
+}
+.carrusel-contenedor .slick-list {
+    width: 95%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 3%;
+}
+
+.carrusel-contenedor .slick-list .slick-track {
+    display: flex;
+    justify-content: space-between;
+}
+
+.carrusel-contenedor 
+.slick-arrow
+.slick-arrow:hover
+{
+    background-color: #133148 !important;
+} 
+
+.carrusel-contenedor 
+.slick-arrow:active {
+    background-color: #133148 !important;
+}
+
+.carrusel-contenedor 
+.slick-arrow
+{
+    background-color: #133148 !important;
+}  */
