@@ -1,0 +1,12 @@
+{
+  "name": "workffice-monorepo",
+  "private": true,
+  "scripts": {
+    "frontend": "cd apps/workffice-frontend && npm start",
+    "backend": "cd apps/workffice-backend && make runserver",
+    "dev": "concurrently --kill-others-on-fail \"cd apps/workffice-backend && make runserver\" \"cd apps/workffice-frontend && npm start\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
