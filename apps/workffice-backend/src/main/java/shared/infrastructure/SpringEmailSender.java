@@ -25,7 +25,7 @@ public class SpringEmailSender implements EmailSender {
         mailMessage.setText(message.body());
         mailMessage.setTo(message.recipient());
         mailMessage.setSubject(message.subject());
-        mailMessage.setFrom("workffice.ar@gmail.com");
+        mailMessage.setFrom("maximiliano.pivac@live.com");
         javaMailSender.send(mailMessage);
     }
    public void sendBatch(List<Message> messages) {

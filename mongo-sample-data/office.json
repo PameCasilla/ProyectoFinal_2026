@@ -1,0 +1,62 @@
+[
+  {
+    "id": "office-101",
+    "officeBranchId": "branch-001",
+    "totalStars": 18,
+    "totalVotes": 4
+  },
+  {
+    "id": "office-102",
+    "officeBranchId": "branch-001",
+    "totalStars": 15,
+    "totalVotes": 3
+  },
+  {
+    "id": "office-201",
+    "officeBranchId": "branch-002",
+    "totalStars": 20,
+    "totalVotes": 4
+  },
+  {
+    "id": "office-202",
+    "officeBranchId": "branch-002",
+    "totalStars": 17,
+    "totalVotes": 3
+  },
+  {
+    "id": "office-301",
+    "officeBranchId": "branch-003",
+    "totalStars": 22,
+    "totalVotes": 5
+  },
+  {
+    "id": "office-302",
+    "officeBranchId": "branch-003",
+    "totalStars": 14,
+    "totalVotes": 3
+  },
+  {
+    "id": "office-401",
+    "officeBranchId": "branch-004",
+    "totalStars": 16,
+    "totalVotes": 4
+  },
+  {
+    "id": "office-402",
+    "officeBranchId": "branch-004",
+    "totalStars": 13,
+    "totalVotes": 3
+  },
+  {
+    "id": "office-501",
+    "officeBranchId": "branch-005",
+    "totalStars": 24,
+    "totalVotes": 5
+  },
+  {
+    "id": "office-502",
+    "officeBranchId": "branch-005",
+    "totalStars": 19,
+    "totalVotes": 4
+  }
+]

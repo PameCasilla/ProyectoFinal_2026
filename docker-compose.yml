@@ -1,0 +1,116 @@
+version: "3.9"
+
+services:
+  mysql-authentication-db:
+    container_name: mysql-authentication-db
+    build:
+      context: ./apps/workffice-backend
+      dockerfile: Dockerfile.mysql_authentication.dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: workffice
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_authentication_data:/var/lib/mysql
+
+  mysql-backoffice-db:
+    container_name: mysql-backoffice-db
+    build:
+      context: ./apps/workffice-backend
+      dockerfile: Dockerfile.mysql_backoffice.dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: workffice
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_backoffice_data:/var/lib/mysql
+
+  mysql-booking-db:
+    container_name: mysql-booking-db
+    build:
+      context: ./apps/workffice-backend
+      dockerfile: Dockerfile.mysql_booking.dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: workffice
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_booking_data:/var/lib/mysql
+
+  mongo-db:
+    container_name: workffice-mongo-db
+    image: mongo:4.2.16-rc0-bionic
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  workffice-server:
+    container_name: workffice-server
+    build:
+      context: ./apps/workffice-backend
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - mysql-authentication-db
+      - mysql-backoffice-db
+      - mysql-booking-db
+      - mongo-db
+    restart: on-failure
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      DB_AUTHENTICATION_HOST: jdbc:mysql://mysql-authentication-db:3306/workffice
+      DB_AUTHENTICATION_USERNAME: root
+      DB_AUTHENTICATION_PASSWORD: 1234
+      DB_BACKOFFICE_HOST: jdbc:mysql://mysql-backoffice-db:3306/workffice
+      DB_BACKOFFICE_USERNAME: root
+      DB_BACKOFFICE_PASSWORD: 1234
+      DB_BOOKING_HOST: jdbc:mysql://mysql-booking-db:3306/workffice
+      DB_BOOKING_USERNAME: root
+      DB_BOOKING_PASSWORD: 1234
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+      DB_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
+      MONGO_DB: workffice
+      MONGO_HOST: mongodb://mongo-db:27017/workffice
+      MERCADO_PAGO_ACCESS_TOKEN: test-1234
+      SERVER_HOST: http://localhost:8080
+      JWT_SECRET: workffice-local-development-secret-123456
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY:?Set SENDGRID_API_KEY in the root .env}
+      EMAIL_USERNAME: ${EMAIL_USERNAME:?Set EMAIL_USERNAME in the root .env}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD:?Set EMAIL_PASSWORD in the root .env}
+      CLIENT_HOST: http://localhost:3000
+      WAIT_HOSTS: mysql-backoffice-db:3306,mysql-authentication-db:3306,mysql-booking-db:3306,mongo-db:27017
+      WAIT_TIMEOUT: 60
+      WAIT_SLEEP_INTERVAL: 5
+    ports:
+      - "8080:8080"
+
+  workffice-frontend:
+    container_name: workffice-frontend
+    build:
+      context: ./apps/workffice-frontend
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - workffice-server
+    environment:
+      REACT_APP_SERVER_HOST: http://localhost:8080
+      CHOKIDAR_USEPOLLING: "true"
+      HOST: 0.0.0.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/workffice-frontend:/workffice-client
+      - /workffice-client/node_modules
+
+volumes:
+  mysql_authentication_data:
+  mysql_backoffice_data:
+  mysql_booking_data:
+  mongo_data:

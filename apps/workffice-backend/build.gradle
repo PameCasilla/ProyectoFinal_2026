@@ -44,7 +44,7 @@ dependencies {
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'com.mercadopago:sdk-java:1.11.0'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:2.1.214'
 //    runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'mysql:mysql-connector-java:8.0.33'
     compileOnly 'org.projectlombok:lombok'

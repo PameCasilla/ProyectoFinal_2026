@@ -1,0 +1,112 @@
+[
+  {
+    "id": "news-001",
+    "officeBranchId": "branch-001",
+    "subject": "Summer promotion",
+    "title": "20% off this month",
+    "body": "Enjoy a special discount on all premium offices this July.",
+    "created": "2026-07-01",
+    "recipients": ["alice@example.com", "bob@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-02T10:30:00"
+  },
+  {
+    "id": "news-002",
+    "officeBranchId": "branch-001",
+    "subject": "New workspace features",
+    "title": "Updated meeting rooms",
+    "body": "Our meeting rooms now include video conferencing support.",
+    "created": "2026-07-05",
+    "recipients": ["carla@example.com"],
+    "status": "DRAFT",
+    "sentAt": null
+  },
+  {
+    "id": "news-003",
+    "officeBranchId": "branch-002",
+    "subject": "Member welcome",
+    "title": "Welcome to Workffice",
+    "body": "Thank you for joining our network of premium workspaces.",
+    "created": "2026-07-08",
+    "recipients": ["dario@example.com", "eva@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-09T08:15:00"
+  },
+  {
+    "id": "news-004",
+    "officeBranchId": "branch-002",
+    "subject": "Weekend availability",
+    "title": "Extended weekend access",
+    "body": "Members can now access selected offices during weekends.",
+    "created": "2026-07-10",
+    "recipients": ["fabio@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-10T12:00:00"
+  },
+  {
+    "id": "news-005",
+    "officeBranchId": "branch-003",
+    "subject": "Safety notice",
+    "title": "Updated access procedures",
+    "body": "Please use your badge at the main entrance after 8 PM.",
+    "created": "2026-07-12",
+    "recipients": ["gina@example.com", "hugo@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-13T07:45:00"
+  },
+  {
+    "id": "news-006",
+    "officeBranchId": "branch-003",
+    "subject": "Networking event",
+    "title": "Community meetup next Friday",
+    "body": "Join our community meetup to connect with local founders.",
+    "created": "2026-07-14",
+    "recipients": ["ines@example.com"],
+    "status": "DRAFT",
+    "sentAt": null
+  },
+  {
+    "id": "news-007",
+    "officeBranchId": "branch-004",
+    "subject": "New service",
+    "title": "Private phone booths available",
+    "body": "We have added private booths for calls and focused work.",
+    "created": "2026-07-15",
+    "recipients": ["julian@example.com", "karina@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-16T09:00:00"
+  },
+  {
+    "id": "news-008",
+    "officeBranchId": "branch-004",
+    "subject": "Flex desk reminder",
+    "title": "Reserve your desk in advance",
+    "body": "Peak days fill up quickly, so reserve your desk early.",
+    "created": "2026-07-17",
+    "recipients": ["luis@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-17T11:30:00"
+  },
+  {
+    "id": "news-009",
+    "officeBranchId": "branch-005",
+    "subject": "Annual review",
+    "title": "Quarterly performance update",
+    "body": "See the latest office usage statistics for this quarter.",
+    "created": "2026-07-18",
+    "recipients": ["marta@example.com", "nora@example.com"],
+    "status": "SENT",
+    "sentAt": "2026-07-19T15:10:00"
+  },
+  {
+    "id": "news-010",
+    "officeBranchId": "branch-005",
+    "subject": "Holiday closure",
+    "title": "Office closed on Monday",
+    "body": "The office will be closed for maintenance next Monday.",
+    "created": "2026-07-20",
+    "recipients": ["omar@example.com"],
+    "status": "DELETED",
+    "sentAt": null
+  }
+]

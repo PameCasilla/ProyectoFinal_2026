@@ -34,7 +34,7 @@ public class BookingPaymentAcceptedTemplate implements Template {
 
     @Override
     public String from() {
-        return "workffice.ar@gmail.com";
+        return "maximiliano.pivac@live.com";
     }
 
     @Override

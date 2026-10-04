@@ -1,0 +1,92 @@
+[
+  {
+    "id": "booking-001",
+    "officeBranchId": "branch-001",
+    "officeId": "office-101",
+    "amount": 1500.5,
+    "paymentDate": "2026-07-01",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-002",
+    "officeBranchId": "branch-001",
+    "officeId": "office-102",
+    "amount": 1800.0,
+    "paymentDate": "2026-07-02",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-003",
+    "officeBranchId": "branch-002",
+    "officeId": "office-201",
+    "amount": 2100.25,
+    "paymentDate": "2026-07-03",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-004",
+    "officeBranchId": "branch-002",
+    "officeId": "office-202",
+    "amount": 1250.75,
+    "paymentDate": "2026-07-04",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-005",
+    "officeBranchId": "branch-003",
+    "officeId": "office-301",
+    "amount": 980.0,
+    "paymentDate": "2026-07-05",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-006",
+    "officeBranchId": "branch-003",
+    "officeId": "office-302",
+    "amount": 1650.5,
+    "paymentDate": "2026-07-06",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-007",
+    "officeBranchId": "branch-004",
+    "officeId": "office-401",
+    "amount": 1100.0,
+    "paymentDate": "2026-07-07",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-008",
+    "officeBranchId": "branch-004",
+    "officeId": "office-402",
+    "amount": 1400.0,
+    "paymentDate": "2026-07-08",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-009",
+    "officeBranchId": "branch-005",
+    "officeId": "office-501",
+    "amount": 2200.0,
+    "paymentDate": "2026-07-09",
+    "month": "JULY",
+    "year": 2026
+  },
+  {
+    "id": "booking-010",
+    "officeBranchId": "branch-005",
+    "officeId": "office-502",
+    "amount": 1950.75,
+    "paymentDate": "2026-07-10",
+    "month": "JULY",
+    "year": 2026
+  }
+]
