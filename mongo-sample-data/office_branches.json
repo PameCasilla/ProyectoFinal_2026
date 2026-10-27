@@ -1,0 +1,172 @@
+[
+  {
+    "id": "branch-001",
+    "name": "Downtown Office",
+    "phone": "+54 11 5555-1001",
+    "province": "Buenos Aires",
+    "city": "CABA",
+    "street": "Av. Corrientes 1001",
+    "offices": [
+      {
+        "id": "office-101",
+        "officeBranchId": "branch-001",
+        "totalStars": 18,
+        "totalVotes": 4
+      }
+    ],
+    "images": ["img/branch-001-1.jpg", "img/branch-001-2.jpg"]
+  },
+  {
+    "id": "branch-002",
+    "name": "Palermo Workspace",
+    "phone": "+54 11 5555-1002",
+    "province": "Buenos Aires",
+    "city": "CABA",
+    "street": "Guatemala 2002",
+    "offices": [
+      {
+        "id": "office-201",
+        "officeBranchId": "branch-002",
+        "totalStars": 15,
+        "totalVotes": 3
+      }
+    ],
+    "images": ["img/branch-002-1.jpg"]
+  },
+  {
+    "id": "branch-003",
+    "name": "Belgrano Hub",
+    "phone": "+54 11 5555-1003",
+    "province": "Buenos Aires",
+    "city": "CABA",
+    "street": "Av. Cabildo 3003",
+    "offices": [
+      {
+        "id": "office-301",
+        "officeBranchId": "branch-003",
+        "totalStars": 20,
+        "totalVotes": 4
+      }
+    ],
+    "images": ["img/branch-003-1.jpg", "img/branch-003-2.jpg"]
+  },
+  {
+    "id": "branch-004",
+    "name": "La Plata Business Center",
+    "phone": "+54 221 5555-1004",
+    "province": "Buenos Aires",
+    "city": "La Plata",
+    "street": "Calle 50 1004",
+    "offices": [
+      {
+        "id": "office-401",
+        "officeBranchId": "branch-004",
+        "totalStars": 12,
+        "totalVotes": 3
+      }
+    ],
+    "images": ["img/branch-004-1.jpg"]
+  },
+  {
+    "id": "branch-005",
+    "name": "Rosario Innovation Hub",
+    "phone": "+54 341 5555-1005",
+    "province": "Santa Fe",
+    "city": "Rosario",
+    "street": "San Martín 5005",
+    "offices": [
+      {
+        "id": "office-501",
+        "officeBranchId": "branch-005",
+        "totalStars": 24,
+        "totalVotes": 5
+      }
+    ],
+    "images": ["img/branch-005-1.jpg", "img/branch-005-2.jpg"]
+  },
+  {
+    "id": "branch-006",
+    "name": "Mendoza Coworking",
+    "phone": "+54 261 5555-1006",
+    "province": "Mendoza",
+    "city": "Mendoza",
+    "street": "San Juan 6006",
+    "offices": [
+      {
+        "id": "office-601",
+        "officeBranchId": "branch-006",
+        "totalStars": 16,
+        "totalVotes": 4
+      }
+    ],
+    "images": ["img/branch-006-1.jpg"]
+  },
+  {
+    "id": "branch-007",
+    "name": "Córdoba Creative Office",
+    "phone": "+54 351 5555-1007",
+    "province": "Córdoba",
+    "city": "Córdoba",
+    "street": "Av. Colón 7007",
+    "offices": [
+      {
+        "id": "office-701",
+        "officeBranchId": "branch-007",
+        "totalStars": 22,
+        "totalVotes": 5
+      }
+    ],
+    "images": ["img/branch-007-1.jpg", "img/branch-007-2.jpg"]
+  },
+  {
+    "id": "branch-008",
+    "name": "Mar del Plata Studio",
+    "phone": "+54 223 5555-1008",
+    "province": "Buenos Aires",
+    "city": "Mar del Plata",
+    "street": "Alvarado 8008",
+    "offices": [
+      {
+        "id": "office-801",
+        "officeBranchId": "branch-008",
+        "totalStars": 14,
+        "totalVotes": 3
+      }
+    ],
+    "images": ["img/branch-008-1.jpg"]
+  },
+  {
+    "id": "branch-009",
+    "name": "Salta Connect",
+    "phone": "+54 387 5555-1009",
+    "province": "Salta",
+    "city": "Salta",
+    "street": "Caseros 9009",
+    "offices": [
+      {
+        "id": "office-901",
+        "officeBranchId": "branch-009",
+        "totalStars": 13,
+        "totalVotes": 3
+      }
+    ],
+    "images": ["img/branch-009-1.jpg"]
+  },
+  {
+    "id": "branch-010",
+    "name": "Tucumán Work Loft",
+    "phone": "+54 381 5555-1010",
+    "province": "Tucumán",
+    "city": "San Miguel de Tucumán",
+    "street": "Avenida Mitre 1010",
+    "offices": [
+      {
+        "id": "office-1001",
+        "officeBranchId": "branch-010",
+        "totalStars": 17,
+        "totalVotes": 4
+      }
+    ],
+    "images": ["img/branch-010-1.jpg", "img/branch-010-2.jpg"]
+  }
+]

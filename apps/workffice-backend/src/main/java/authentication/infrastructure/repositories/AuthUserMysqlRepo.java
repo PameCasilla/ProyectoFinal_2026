@@ -8,6 +8,7 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 
 import javax.persistence.PersistenceException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import static io.vavr.API.$;
@@ -24,7 +25,13 @@ public class AuthUserMysqlRepo extends AuthenticationJPARepo<AuthUser, AuthUserI
     public Try<Void> store(AuthUser authUser) {
         //noinspection unchecked
         return this.save(authUser)
-                .mapFailure(Case($(instanceOf(PersistenceException.class)), UserEmailAlreadyExist::new));
+                .mapFailure(Case($(instanceOf(PersistenceException.class)), UserEmailAlreadyExist::new))
+                .recoverWith(error -> {
+                    if (error instanceof UserEmailAlreadyExist) {
+                        return io.vavr.control.Try.failure(new UserEmailAlreadyExist());
+                    }
+                    return io.vavr.control.Try.failure(error);
+                });
     }
     
     @Override

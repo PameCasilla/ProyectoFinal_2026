@@ -29,12 +29,7 @@ public class BookingPaymentAcceptedTemplate implements Template {
 
     @Override
     public String subject() {
-        return "Tu reserva se registro exitosamente";
-    }
-
-    @Override
-    public String from() {
-        return "workffice.ar@gmail.com";
+        return "Tu reserva se registró exitosamente";
     }
 
     @Override
@@ -55,7 +50,19 @@ public class BookingPaymentAcceptedTemplate implements Template {
 
     @Override
     public String plainTextBody() {
-        var link = host + "/bookings/" + bookingId;
-        return format("Tu reserva se registro exitosamente, link de la reserva: %s", link);
+        HashMap<String, String> data = substitutionData();
+        return format(
+            "Tu reserva se registró exitosamente.%nReserva: %s%nOficina: %s%nFecha: %s%nHorario: %s"
+                + "%nDuracion: %s horas%nPrecio por hora: $%s%nTotal: $%s%nUbicacion: %s%nVer reserva: %s",
+            data.get("booking_id"),
+            data.get("office_name"),
+            data.get("booking_schedule_date"),
+            data.get("booking_schedule_time"),
+            data.get("booking_hours_quantity"),
+            data.get("price_per_hour"),
+            data.get("total_price"),
+            data.get("office_branch_location"),
+            data.get("booking_url")
+        );
     }
 }

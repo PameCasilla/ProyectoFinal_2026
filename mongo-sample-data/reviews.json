@@ -1,0 +1,92 @@
+[
+  {
+    "id": "review-001",
+    "comment": "Excellent service and very modern workspace.",
+    "stars": 5,
+    "officeBranchId": "branch-001",
+    "officeId": "office-101",
+    "renterEmail": "alice@example.com",
+    "created": "2026-07-01T09:15:00"
+  },
+  {
+    "id": "review-002",
+    "comment": "Great location and fast Wi-Fi.",
+    "stars": 4,
+    "officeBranchId": "branch-001",
+    "officeId": "office-102",
+    "renterEmail": "bob@example.com",
+    "created": "2026-07-02T10:00:00"
+  },
+  {
+    "id": "review-003",
+    "comment": "A bit noisy, but the staff was helpful.",
+    "stars": 3,
+    "officeBranchId": "branch-002",
+    "officeId": "office-201",
+    "renterEmail": "carla@example.com",
+    "created": "2026-07-03T11:30:00"
+  },
+  {
+    "id": "review-004",
+    "comment": "Comfortable desks and good amenities.",
+    "stars": 5,
+    "officeBranchId": "branch-002",
+    "officeId": "office-202",
+    "renterEmail": "dario@example.com",
+    "created": "2026-07-04T12:15:00"
+  },
+  {
+    "id": "review-005",
+    "comment": "The meeting rooms were perfect for our team.",
+    "stars": 5,
+    "officeBranchId": "branch-003",
+    "officeId": "office-301",
+    "renterEmail": "eva@example.com",
+    "created": "2026-07-05T13:20:00"
+  },
+  {
+    "id": "review-006",
+    "comment": "Good value for money.",
+    "stars": 4,
+    "officeBranchId": "branch-003",
+    "officeId": "office-302",
+    "renterEmail": "fabio@example.com",
+    "created": "2026-07-06T14:05:00"
+  },
+  {
+    "id": "review-007",
+    "comment": "Very clean and well organized.",
+    "stars": 5,
+    "officeBranchId": "branch-004",
+    "officeId": "office-401",
+    "renterEmail": "gina@example.com",
+    "created": "2026-07-07T15:45:00"
+  },
+  {
+    "id": "review-008",
+    "comment": "The coffee station is a nice bonus.",
+    "stars": 4,
+    "officeBranchId": "branch-004",
+    "officeId": "office-402",
+    "renterEmail": "hugo@example.com",
+    "created": "2026-07-08T16:10:00"
+  },
+  {
+    "id": "review-009",
+    "comment": "Great atmosphere for remote work.",
+    "stars": 5,
+    "officeBranchId": "branch-005",
+    "officeId": "office-501",
+    "renterEmail": "ines@example.com",
+    "created": "2026-07-09T17:25:00"
+  },
+  {
+    "id": "review-010",
+    "comment": "Would book again for a full day.",
+    "stars": 4,
+    "officeBranchId": "branch-005",
+    "officeId": "office-502",
+    "renterEmail": "julian@example.com",
+    "created": "2026-07-10T18:00:00"
+  }
+]

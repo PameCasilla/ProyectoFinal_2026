@@ -126,7 +126,7 @@ export const NewRole = (props) => {
                             <Notification
                                 show={notification.show && notification.isError}
                                 isError={true}
-                                message={getErrorMessage(notification.errorCode)}
+                                message={getErrorMessage(notification.errorCode) || notification.message || ''}
                                 hideNotification={hideNotification}
                             />
                             <Notification

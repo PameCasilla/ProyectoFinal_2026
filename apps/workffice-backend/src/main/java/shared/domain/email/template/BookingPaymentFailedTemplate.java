@@ -16,11 +16,6 @@ public class BookingPaymentFailedTemplate implements Template {
     }
 
     @Override
-    public String from() {
-        return "workffice.ar@gmail.com";
-    }
-
-    @Override
     public HashMap<String, String> substitutionData() {
         return new HashMap<>();
     }

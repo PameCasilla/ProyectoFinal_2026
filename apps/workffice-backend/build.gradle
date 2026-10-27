@@ -27,6 +27,7 @@ configurations.all {
     }
 }
 
+
 repositories {
     mavenCentral()
 }
@@ -40,11 +41,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'com.sendgrid:sendgrid-java:4.7.2'
+    testImplementation 'com.icegreen:greenmail:1.6.2'
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'com.mercadopago:sdk-java:1.11.0'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:2.1.214'
 //    runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'mysql:mysql-connector-java:8.0.33'
     compileOnly 'org.projectlombok:lombok'
@@ -56,7 +57,6 @@ dependencies {
     testImplementation ('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.mockito', module: 'mockito-all'
     }
-    testImplementation 'com.icegreen:greenmail:1.6.2'
     testImplementation 'org.spockframework:spock-spring:2.0-M2-groovy-3.0'
     testImplementation('org.spockframework:spock-core:2.0-M2-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'

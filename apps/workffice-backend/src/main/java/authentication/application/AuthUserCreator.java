@@ -55,6 +55,10 @@ public class AuthUserCreator {
     }
 
     public Either<UseCaseError, Void> createUser(AuthUserId id, UserInformation userInformation) {
+        if (authUserRepository.findByEmail(userInformation.getEmail()).isDefined()) {
+            return Either.left(UserError.USER_EMAIL_ALREADY_EXISTS);
+        }
+
         AuthUser authUser = AuthUser.createNew(
                 id,
                 userInformation.getEmail(),
@@ -67,6 +71,12 @@ public class AuthUserCreator {
         );
 
         return authUserRepository.store(authUser)
+                .recoverWith(error -> {
+                    if (error instanceof RuntimeException) {
+                        return io.vavr.control.Try.failure(new RuntimeException(UserError.USER_EMAIL_ALREADY_EXISTS.name()));
+                    }
+                    return io.vavr.control.Try.failure(error);
+                })
                 .toEither((UseCaseError) UserError.USER_EMAIL_ALREADY_EXISTS)
                 .peek(v -> {
                     sendConfirmationEmail(authUser);

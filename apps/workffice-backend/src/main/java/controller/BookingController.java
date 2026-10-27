@@ -6,10 +6,10 @@ import booking.application.dto.booking.BookingError;
 import booking.domain.booking.BookingId;
 import booking.infrastructure.mercadopago.MercadoPagoPaymentNotification;
 import booking.infrastructure.mercadopago.MercadoPagoPaymentResolver;
+import booking.infrastructure.mercadopago.MercadoPagoWebhookVerifier;
 import controller.response.DataResponse;
 import controller.response.PaginatedResponse;
-
-import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static java.lang.String.format;
 
 @RestController
 @RequestMapping(value = "/api/bookings")
@@ -33,25 +32,46 @@ public class BookingController extends BaseController {
 
     ResponseEntity<DataResponse> notFound = ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(notFound("BOOKING_NOT_FOUND", "There is no booking with specified id"));
+            .body(notFound(
+                    "BOOKING_NOT_FOUND",
+                    "There is no booking with specified id"
+            ));
+
     ResponseEntity<DataResponse> forbidden = ResponseEntity
             .status(HttpStatus.FORBIDDEN)
-            .body(forbidden("BOOKING_FORBIDDEN", "You don't have access to this booking"));
-    ResponseEntity<DataResponse> invalidId = ResponseEntity.badRequest().body(invalid(
-            "INVALID_BOOKING_ID",
-            "Booking id provided is not valid"
-    ));
+            .body(forbidden(
+                    "BOOKING_FORBIDDEN",
+                    "You don't have access to this booking"
+            ));
 
-    @Autowired private BookingFinder              finder;
-    @Autowired private PaymentPreferenceCreator   paymentPreferenceCreator;
-    @Autowired private MercadoPagoPaymentResolver mercadoPagoPaymentResolver;
+    ResponseEntity<DataResponse> invalidId = ResponseEntity
+            .badRequest()
+            .body(invalid(
+                    "INVALID_BOOKING_ID",
+                    "Booking id provided is not valid"
+            ));
+
+    @Autowired
+    private BookingFinder finder;
+
+    @Autowired
+    private PaymentPreferenceCreator paymentPreferenceCreator;
+
+    @Autowired
+    private MercadoPagoPaymentResolver mercadoPagoPaymentResolver;
+
+    @Autowired
+    private MercadoPagoWebhookVerifier webhookVerifier;
 
     @GetMapping("/{id}/")
     public ResponseEntity<?> getBooking(@PathVariable String id) {
         try {
             var bookingId = BookingId.fromString(id);
+
             return finder.find(bookingId)
-                    .map(booking -> ResponseEntity.ok((DataResponse) entityResponse(booking)))
+                    .map(booking -> ResponseEntity.ok(
+                            (DataResponse) entityResponse(booking)
+                    ))
                     .getOrElseGet(error -> Match(error).of(
                             Case($(BookingError.BOOKING_NOT_FOUND), notFound),
                             Case($(BookingError.BOOKING_FORBIDDEN), forbidden)
@@ -74,8 +94,11 @@ public class BookingController extends BaseController {
                             pageBookings.getSize(),
                             pageBookings.isLast(),
                             pageBookings.getTotalPages(),
-                            pageBookings.getTotalPages() == 0 ? 0 : pageBookings.getNumber() + 1
+                            pageBookings.getTotalPages() == 0
+                                    ? 0
+                                    : pageBookings.getNumber() + 1
                     );
+
                     return ResponseEntity.ok(response);
                 })
                 .getOrElseGet(error -> Match(error).of(
@@ -84,31 +107,41 @@ public class BookingController extends BaseController {
     }
 
     @PostMapping("/{id}/mp_preferences/")
-    public ResponseEntity<?> createMercadoPagoPreference(@PathVariable String id) {
+    public ResponseEntity<?> createMercadoPagoPreference(
+            @PathVariable String id
+    ) {
         try {
             var bookingId = BookingId.fromString(id);
-            ResponseEntity<DataResponse> bookingAlreadyScheduled = ResponseEntity
-                    .badRequest()
-                    .body(invalid(
+
+            ResponseEntity<DataResponse> bookingAlreadyScheduled =
+                    ResponseEntity.badRequest().body(invalid(
                             "BOOKING_IS_NOT_PENDING",
                             "You can't create a payment preference for a booking that is no longer pending"
                     ));
-            ResponseEntity<DataResponse> mercadoPagoError = ResponseEntity
-                    .badRequest()
-                    .body(invalid(
+
+            ResponseEntity<DataResponse> mercadoPagoError =
+                    ResponseEntity.badRequest().body(invalid(
                             "MERCADO_PAGO_ERROR",
-                            "Something went wrong with mercado pago try again later"
+                            "Could not create payment preference"
                     ));
-            return paymentPreferenceCreator
-                    .create(bookingId)
+
+            return paymentPreferenceCreator.create(bookingId)
                     .map(paymentPreference -> ResponseEntity
                             .status(HttpStatus.CREATED)
-                            .body((DataResponse) entityResponse(paymentPreference)))
+                            .body((DataResponse) entityResponse(
+                                    paymentPreference
+                            )))
                     .getOrElseGet(error -> Match(error).of(
                             Case($(BookingError.BOOKING_NOT_FOUND), notFound),
                             Case($(BookingError.BOOKING_FORBIDDEN), forbidden),
-                            Case($(BookingError.BOOKING_IS_NOT_PENDING), bookingAlreadyScheduled),
-                            Case($(BookingError.MERCADO_PAGO_ERROR), mercadoPagoError)
+                            Case(
+                                    $(BookingError.BOOKING_IS_NOT_PENDING),
+                                    bookingAlreadyScheduled
+                            ),
+                            Case(
+                                    $(BookingError.MERCADO_PAGO_ERROR),
+                                    mercadoPagoError
+                            )
                     ));
         } catch (IllegalArgumentException e) {
             return invalidId;
@@ -118,12 +151,20 @@ public class BookingController extends BaseController {
     @PostMapping("/{bookingId}/mp_notifications/")
     public ResponseEntity<?> mpNotification(
             @PathVariable String bookingId,
-            @RequestBody MercadoPagoPaymentNotification notification
+            @RequestBody MercadoPagoPaymentNotification notification,
+            HttpServletRequest request
     ) {
-        LoggerFactory.getLogger(getClass()).info(format("BOOKING_ID: %s", bookingId));
-        LoggerFactory.getLogger(getClass()).info(notification.toString());
-        if (notification.getAction().equals("payment.created") || notification.getAction().equals("payment.updated"))
-            mercadoPagoPaymentResolver.handleNotification(bookingId, notification);
+        webhookVerifier.verify(request, notification);
+
+        if ("payment".equals(notification.getType()) &&
+                ("payment.created".equals(notification.getAction()) ||
+                 "payment.updated".equals(notification.getAction()))) {
+            mercadoPagoPaymentResolver.handleNotification(
+                    bookingId,
+                    notification
+            );
+        }
+
         return ResponseEntity.ok().build();
     }
 }

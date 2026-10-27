@@ -1,0 +1,42 @@
+[
+  {
+    "id": "branch-001",
+    "lastRenterEmails": ["alice@example.com", "bob@example.com"]
+  },
+  {
+    "id": "branch-002",
+    "lastRenterEmails": ["carla@example.com", "dario@example.com"]
+  },
+  {
+    "id": "branch-003",
+    "lastRenterEmails": ["eva@example.com", "fabio@example.com"]
+  },
+  {
+    "id": "branch-004",
+    "lastRenterEmails": ["gina@example.com", "hugo@example.com"]
+  },
+  {
+    "id": "branch-005",
+    "lastRenterEmails": ["ines@example.com", "julian@example.com"]
+  },
+  {
+    "id": "branch-006",
+    "lastRenterEmails": ["karina@example.com", "luis@example.com"]
+  },
+  {
+    "id": "branch-007",
+    "lastRenterEmails": ["marta@example.com", "nora@example.com"]
+  },
+  {
+    "id": "branch-008",
+    "lastRenterEmails": ["omar@example.com", "pablo@example.com"]
+  },
+  {
+    "id": "branch-009",
+    "lastRenterEmails": ["quiroga@example.com", "rocio@example.com"]
+  },
+  {
+    "id": "branch-010",
+    "lastRenterEmails": ["sara@example.com", "tomas@example.com"]
+  }
+]

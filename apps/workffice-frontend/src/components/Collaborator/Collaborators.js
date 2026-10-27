@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 import { COLLABORATOR_RESOURCE } from '../../stores/actions/errors/permissionActions';
-import { ACCESS_TYPE_READ, COLLABORATOR_FORBIDDEN_MESSAGE, getErrorMessage } from '../../utils/collaboratorTranslations';
+import { COLLABORATOR_FORBIDDEN_MESSAGE, getErrorMessage } from '../../utils/collaboratorTranslations';
 import { EmptyComponent } from '../Common/Empty/EmptyComponent';
 import { NotAccess } from '../Common/ErrorPages/NotAccess';
 import { Loading } from '../Common/Loading/Loading';
@@ -87,7 +87,7 @@ export const Collaborators = ({
       <Notification
         show={notification.show && notification.isError}
         isError={true}
-        message={getErrorMessage(notification.errorCode, ACCESS_TYPE_READ)}
+        message={getErrorMessage(notification.errorCode) || notification.message || ''}
         hideNotification={hideNotification}
       />
       <Notification

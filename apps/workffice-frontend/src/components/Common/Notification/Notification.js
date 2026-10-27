@@ -25,3 +25,7 @@ Notification.propTypes = {
     message: PropType.string.isRequired,
     hideNotification: PropType.func
 }
+
+Notification.defaultProps = {
+    message: ''
+};

@@ -37,5 +37,13 @@ public class TestBookingPaymentAcceptedTemplate {
         assertThat(substitutionData.get("total_price")).isEqualTo("500.0");
         assertThat(substitutionData.get("office_branch_location"))
                 .isEqualTo("Mendoza, Godoy Cruz 5501 - Calle falsa 1234");
+        assertThat(template.plainTextBody())
+                .contains(
+                        "PIMBA",
+                        "2018-12-08",
+                        "Desde 19:00 hasta 20:00",
+                        "500.0",
+                        "http://localhost:3000/admin/booking?id=123"
+                );
     }
 }

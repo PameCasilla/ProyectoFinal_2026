@@ -1,5 +1,4 @@
 
-import { CloudinaryContext, Image } from 'cloudinary-react';
 import { includes } from "lodash-es";
 import React from "react";
 import {
@@ -27,10 +26,10 @@ export const UserProfile = ({
     permission,
 }) => {
     React.useEffect(() => {
-        if (userMe?.userType === "OFFICE_HOLDER") {
+        if (userMe?.userType === "OFFICE_HOLDER" && officeBranch?.id) {
             loadCollaborators(officeBranch.id);
         }
-    }, [collaborators ? collaborators.length : 0])
+    }, [userMe?.userType, officeBranch?.id, loadCollaborators])
     const { name, bio, profileImage } = userMe || {}
     React.useEffect(() => {
         setTimeout(() => {
@@ -60,13 +59,7 @@ export const UserProfile = ({
             <Row style={{ paddingTop: 30 }}>
                 <Col md="4">
                     <Card className="card-user">
-                        <div className="image">
-                            <CloudinaryContext cloudName="workffice">
-                                <div>
-                                    <Image publicId="sample" width="0.5" />
-                                </div>
-                            </CloudinaryContext>
-                        </div>
+                        <div className="image" />
                         <CardBody>
                             <div className="author">
                                 <PictureUpload avatar={profileImage} onChange={(imageData) => updateUser(imageData)} />
@@ -89,7 +82,7 @@ export const UserProfile = ({
                         userMe?.userType !== "RENTER" &&
                         <Card>
                             <CardHeader>
-                                <CardTitle tag="h4">Colaboradores de {userMe?.userType !== "RENTER" && officeBranch.name}</CardTitle>
+                                <CardTitle tag="h4">Colaboradores de {officeBranch?.name || ""}</CardTitle>
                             </CardHeader>
                             <CardBody>
                                 <ul className="list-unstyled team-members">

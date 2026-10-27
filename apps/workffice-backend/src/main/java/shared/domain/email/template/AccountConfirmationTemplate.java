@@ -28,18 +28,9 @@ public class AccountConfirmationTemplate implements Template {
     }
 
     @Override
-    public String from() {
-        return "workffice.ar@gmail.com";
-    }
-
-    @Override
     public HashMap<String, String> substitutionData() {
         return new HashMap<>() {{
-            put("url", format(
-                    "%s/auth/confirmation?token=%s",
-                    host,
-                    confirmationToken
-            ));
+            put("url", format("%s/auth/confirmation?token=%s", host, confirmationToken));
         }};
     }
 

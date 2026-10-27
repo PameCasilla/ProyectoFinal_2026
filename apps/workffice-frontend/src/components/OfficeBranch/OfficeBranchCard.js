@@ -5,8 +5,8 @@ import { Card, CardBody, Col, Row } from 'reactstrap';
 import { Cloudinary } from '../Common/Cloudinary/Cloudinary';
 
 export const OfficeBranchCard = ({ branch }) => {
-  const images = branch.images
-
+  const firstImage = branch?.images?.[0];
+  const imagePublicId = typeof firstImage === 'string' ? firstImage : firstImage?.url;
 
   const cheapestPrice = offices => {
     const prices = offices.map(office => office.price)
@@ -21,10 +21,10 @@ export const OfficeBranchCard = ({ branch }) => {
   return (
     <>
       {branch &&
-        <Link to={`/admin/office-branch?id=${branch.id}`} exact style={{ color: 'white', textDecoration: 'none' }}>
+        <Link to={`/admin/office-branch?id=${branch.id}`} style={{ color: 'white', textDecoration: 'none' }}>
           <Card>
             <CardBody>
-              <Cloudinary className="office-branch-card-image" publicId={images ? images[0] : ""} />
+              <Cloudinary className="office-branch-card-image" publicId={imagePublicId} />
               <div className="office-branch-card-title">
                 <h5>
                   <small>{branch.name}</small>
