@@ -19,10 +19,10 @@ export const UserUpdate = (props) => {
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            name: name,
-            lastname: lastname,
-            address: address,
-            bio: bio,
+            name: name || '',
+            lastname: lastname || '',
+            address: address || '',
+            bio: bio || '',
         },
         onSubmit: async (values) => {
             await props.update({ ...values, profileImage });

@@ -24,22 +24,13 @@ public class PasswordResetTemplate implements Template {
 
     @Override
     public String subject() {
-        return "Reset your password";
-    }
-
-    @Override
-    public String from() {
-        return "maximiliano.pivac@live.com";
+        return "Restablece tu contraseña";
     }
 
     @Override
     public HashMap<String, String> substitutionData() {
         return new HashMap<>() {{
-            put("url", format(
-                    "%s/auth/reset-password?token=%s",
-                    host,
-                    token
-            ));
+            put("url", format("%s/auth/reset-password?token=%s", host, token));
         }};
     }
 

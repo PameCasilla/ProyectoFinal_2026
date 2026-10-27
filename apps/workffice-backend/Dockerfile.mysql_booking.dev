@@ -9,5 +9,5 @@ COPY ./db/uuid_functions.sql /tmp/uuid_functions.sql
 RUN cp /tmp/uuid_functions.sql /docker-entrypoint-initdb.d
 
 COPY ./db/booking_data.sql /tmp/data.sql
-RUN sed '/Warning: Using a password on the command line interface can be insecure./d' /tmp/data.sql > /tmp/clean_data.sql
+RUN sed '/^mysqldump: \[Warning\] Using a password on the command line interface can be insecure\.$/d' /tmp/data.sql > /tmp/clean_data.sql
 RUN cp /tmp/clean_data.sql /docker-entrypoint-initdb.d

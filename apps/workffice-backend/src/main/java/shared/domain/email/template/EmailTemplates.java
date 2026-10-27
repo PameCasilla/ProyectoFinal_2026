@@ -1,30 +1,46 @@
 package shared.domain.email.template;
 
-import com.sendgrid.helpers.mail.objects.Personalization;
-import io.vavr.control.Option;
-
-import java.util.HashMap;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 
 @Component
 public class EmailTemplates {
+    private static final Map<String, String> FILES = Map.of(
+            "ACCOUNT_CONFIRMATION", "account-confirmation",
+            "COLLABORATOR_INVITATION", "collaborator-invitation",
+            "PASSWORD_RESET", "password-reset",
+            "BOOKING_PAYMENT_FAILED", "booking-payment-failed",
+            "BOOKING_PAYMENT_ACCEPTED", "booking-payment-accepted",
+            "OFFICE_HOLDER_NEWS", "office-holder-news");
+    private static final Pattern VARIABLE = Pattern.compile("\\{\\{([a-z_]+)\\}\\}");
 
-    public Option<String> sendgridTemplateId(Template template) {
-        HashMap<String, String> templateIds = new HashMap<>() {{
-            put(AccountConfirmationTemplate.TEMPLATE_NAME, "d-a459049cdf434eea8769d195cd3537d6");
-            put(CollaboratorInvitationTemplate.TEMPLATE_NAME, "d-90f49ed6c35f413098988bf52289967e");
-            put(PasswordResetTemplate.TEMPLATE_NAME, "d-69b17e2a6cbe45cdb535f7baf88248fd");
-            put(BookingPaymentFailedTemplate.TEMPLATE_NAME, "d-68e16810eed94415a3e9e953332f58f7");
-            put(BookingPaymentAcceptedTemplate.TEMPLATE_NAME, "d-a47ae326016b42168e999399676476ee");
-            put(OfficeHolderNewsTemplate.TEMPLATE_NAME, "d-c7eb668fc941418189281dbfdd00addd");
-        }};
-        return Option.of(templateIds.get(template.templateName()));
-    }
-
-    public Personalization sengridSubstitutionData(Template template) {
-        Personalization personalization = new Personalization();
-        template.substitutionData()
-                .forEach(personalization::addDynamicTemplateData);
-        return personalization;
+    public String render(Template template) {
+        String name = FILES.get(template.templateName());
+        if (name == null) {
+            throw new IllegalArgumentException("Unknown email template: " + template.templateName());
+        }
+        try (var input = new ClassPathResource("email/" + name + ".html").getInputStream()) {
+            String html = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            var variables = template.substitutionData();
+            Matcher matcher = VARIABLE.matcher(html);
+            StringBuffer result = new StringBuffer();
+            while (matcher.find()) {
+                String value = variables.get(matcher.group(1));
+                if (value == null) {
+                    throw new IllegalArgumentException("Missing email variable: " + matcher.group(1));
+                }
+                matcher.appendReplacement(result, Matcher.quoteReplacement(HtmlUtils.htmlEscape(value, "UTF-8")));
+            }
+            matcher.appendTail(result);
+            return result.toString();
+        } catch (IOException exception) {
+            throw new IllegalStateException("Cannot read email template: " + name, exception);
+        }
     }
 }

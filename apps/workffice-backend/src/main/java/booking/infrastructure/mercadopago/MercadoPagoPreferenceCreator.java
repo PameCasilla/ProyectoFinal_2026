@@ -15,7 +15,7 @@ import com.mercadopago.resources.datastructures.preference.Item;
 import com.mercadopago.resources.datastructures.preference.Payer;
 import com.mercadopago.resources.datastructures.preference.PaymentMethods;
 import io.vavr.control.Either;
-
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -24,26 +24,35 @@ import static java.lang.String.format;
 
 @Component
 public class MercadoPagoPreferenceCreator implements PreferenceCreator {
+
     private final Environment env;
-    private Preference preference = null;
+    private final Logger logger =
+            LoggerFactory.getLogger(MercadoPagoPreferenceCreator.class);
+
+    private Preference preference;
 
     public MercadoPagoPreferenceCreator(Environment env) {
         this.env = env;
     }
 
     public void setPreference(Preference preference) {
-        // Only for testing
+        // Used by existing tests.
         this.preference = preference;
     }
 
     @Override
-    public Either<BookingError, PaymentPreference> createForBooking(BookingPreferenceInformation info) {
+    public Either<BookingError, PaymentPreference> createForBooking(
+            BookingPreferenceInformation info
+    ) {
         try {
-            MercadoPago.SDK.setAccessToken(env.getProperty("MERCADO_PAGO_ACCESS_TOKEN"));
+            MercadoPago.SDK.setAccessToken(
+                    env.getProperty("MERCADO_PAGO_ACCESS_TOKEN")
+            );
         } catch (MPConfException e) {
-            LoggerFactory.getLogger(getClass()).error(e.toString());
+            logger.error("Could not configure Mercado Pago", e);
             return Either.left(BookingError.MERCADO_PAGO_ERROR);
         }
+
         PaymentMethods paymentMethods = new PaymentMethods();
         paymentMethods.setExcludedPaymentTypes("ticket", "atm");
 
@@ -51,25 +60,31 @@ public class MercadoPagoPreferenceCreator implements PreferenceCreator {
         item.setId(info.getBookingId())
                 .setTitle(info.getOfficeName())
                 .setQuantity(1)
-                .setCategoryId("ARS")
+                .setCurrencyId(
+                        env.getProperty("MERCADO_PAGO_CURRENCY", "ARS")
+                )
                 .setDescription(info.getDescription())
                 .setUnitPrice(info.getPrice());
 
         Payer payer = new Payer();
         payer.setEmail(info.getRenterEmail());
 
-        var newPreference = preference != null ? preference : new Preference();
-        /* preference.setBinaryMode(true); Only accept reject or approved status
-        https://www.mercadopago.com.ar/developers/es/guides/online-payments/checkout-pro/configurations */
-        /* Set an expiration date in order to not receive payments
-        for a booking that is no longer pending
-        preference.setExpirationDateTo() */
-        newPreference.setStatementDescriptor("Alquiler Workffice APP");
+        Preference newPreference =
+                preference != null ? preference : new Preference();
+
+        String returnUrl = format(
+                "%s/admin/booking?id=%s",
+                env.getProperty("CLIENT_HOST"),
+                info.getBookingId()
+        );
+
+        newPreference.setStatementDescriptor("WORKFFICE");
         newPreference.setBackUrls(new BackUrls(
-                format("%s/admin/booking?id=%s", env.getProperty("CLIENT_HOST"), info.getBookingId()),
-                "",
-                ""
+                returnUrl,
+                returnUrl + "&payment_result=pending",
+                returnUrl + "&payment_result=failure"
         ));
+        newPreference.setExternalReference(info.getBookingId());
         newPreference.setPaymentMethods(paymentMethods);
         newPreference.setPayer(payer);
         newPreference.appendItem(item);
@@ -78,56 +93,66 @@ public class MercadoPagoPreferenceCreator implements PreferenceCreator {
                 env.getProperty("SERVER_HOST"),
                 info.getBookingId()
         ));
+
         try {
             newPreference.save();
-            LoggerFactory.getLogger(getClass()).info(newPreference.getLastApiResponse().getStringResponse());
-            return Either.right(PaymentPreference.of(newPreference.getId()));
+            return Either.right(
+                    PaymentPreference.of(newPreference.getId())
+            );
         } catch (MPException e) {
-            LoggerFactory.getLogger(getClass()).error(e.toString());
+            logger.error("Could not create booking payment preference", e);
             return Either.left(BookingError.MERCADO_PAGO_ERROR);
         }
     }
 
     @Override
-    public Either<MembershipAcquisitionError, PaymentPreference> createForMembership(
-            MembershipAcquisitionPreference info
-    ) {
+    public Either<MembershipAcquisitionError, PaymentPreference>
+    createForMembership(MembershipAcquisitionPreference info) {
         try {
-            MercadoPago.SDK.setAccessToken(env.getProperty("MERCADO_PAGO_ACCESS_TOKEN"));
+            MercadoPago.SDK.setAccessToken(
+                    env.getProperty("MERCADO_PAGO_ACCESS_TOKEN")
+            );
         } catch (MPConfException e) {
-            LoggerFactory.getLogger(getClass()).error(e.toString());
-            return Either.left(MembershipAcquisitionError.MERCADO_PAGO_ERROR);
+            logger.error("Could not configure Mercado Pago", e);
+            return Either.left(
+                    MembershipAcquisitionError.MERCADO_PAGO_ERROR
+            );
         }
+
         PaymentMethods paymentMethods = new PaymentMethods();
         paymentMethods.setExcludedPaymentTypes("ticket", "atm");
 
         Item item = new Item();
         item.setId(info.getMembershipAcquisitionId())
-                .setTitle(info.getMembershipName())
+                .setTitle("Membresia Workffice")
                 .setQuantity(1)
-                .setCategoryId("ARS")
+                .setCurrencyId(
+                        env.getProperty("MERCADO_PAGO_CURRENCY", "ARS")
+                )
                 .setDescription(info.getDescription())
                 .setUnitPrice(info.getPrice());
 
         Payer payer = new Payer();
         payer.setEmail(info.getBuyerEmail());
 
-        var newPreference = preference != null ? preference : new Preference();
-        /* preference.setBinaryMode(true); Only accept reject or approved status
-        https://www.mercadopago.com.ar/developers/es/guides/online-payments/checkout-pro/configurations */
-        /* Set an expiration date in order to not receive payments
-        for a booking that is no longer pending
-        preference.setExpirationDateTo() */
-        newPreference.setStatementDescriptor("Alquiler Workffice APP");
+        Preference newPreference =
+                preference != null ? preference : new Preference();
+
+        String returnUrl = format(
+                "%s/admin/membership_acquisitions?id=%s",
+                env.getProperty("CLIENT_HOST"),
+                info.getMembershipAcquisitionId()
+        );
+
+        newPreference.setStatementDescriptor("WORKFFICE");
         newPreference.setBackUrls(new BackUrls(
-                format(
-                        "%s/admin/membership_acquisitions?id=%s",
-                        env.getProperty("CLIENT_HOST"),
-                        info.getMembershipAcquisitionId()
-                ),
-                "",
-                ""
+                returnUrl,
+                returnUrl + "&payment_result=pending",
+                returnUrl + "&payment_result=failure"
         ));
+        newPreference.setExternalReference(
+                info.getMembershipAcquisitionId()
+        );
         newPreference.setPaymentMethods(paymentMethods);
         newPreference.setPayer(payer);
         newPreference.appendItem(item);
@@ -136,13 +161,17 @@ public class MercadoPagoPreferenceCreator implements PreferenceCreator {
                 env.getProperty("SERVER_HOST"),
                 info.getMembershipAcquisitionId()
         ));
+
         try {
             newPreference.save();
-            LoggerFactory.getLogger(getClass()).info(newPreference.getLastApiResponse().getStringResponse());
-            return Either.right(PaymentPreference.of(newPreference.getId()));
+            return Either.right(
+                    PaymentPreference.of(newPreference.getId())
+            );
         } catch (MPException e) {
-            LoggerFactory.getLogger(getClass()).error(e.toString());
-            return Either.left(MembershipAcquisitionError.MERCADO_PAGO_ERROR);
+            logger.error("Could not create membership payment preference", e);
+            return Either.left(
+                    MembershipAcquisitionError.MERCADO_PAGO_ERROR
+            );
         }
     }
 }

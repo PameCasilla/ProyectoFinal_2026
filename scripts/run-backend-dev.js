@@ -29,30 +29,15 @@ function loadEnvFile(filePath) {
   });
 }
 
-function removeIfExists(filePath) {
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-}
-
-function removeStaleDbFiles() {
-  const dbFiles = [
-    'db_authentication.mv.db',
-    'db_authentication.trace.db',
-    'db_backoffice.mv.db',
-    'db_backoffice.trace.db',
-    'db_booking.mv.db',
-    'db_booking.trace.db',
-  ];
-
-  dbFiles.forEach((fileName) => removeIfExists(path.join(backendDir, fileName)));
-}
-
 loadEnvFile(envFile);
-removeStaleDbFiles();
 
 const executable = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
-const args = ['bootRun', '--no-daemon', '--continuous'];
+const args = [
+  'bootRun',
+  '--no-daemon',
+  '--continuous',
+  '--args=--spring.config.location=classpath:/prod_application.properties',
+];
 
 const child = spawn(executable, args, {
   cwd: backendDir,

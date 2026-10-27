@@ -397,7 +397,6 @@ export const OfficeForm = ({ office, onSubmit, inactivities, confirmButtonName, 
                                 <Button
                                     className="btn-round"
                                     color="danger"
-                                    fill
                                     onClick={() => successAlert()}
                                 >
                                     Dar de baja

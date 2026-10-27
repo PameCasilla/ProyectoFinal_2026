@@ -16,10 +16,6 @@ public class Message {
         return template;
     }
     
-    public String from() {
-        return template.from();
-    }
-    
     public String subject() {
         return template.subject();
     }

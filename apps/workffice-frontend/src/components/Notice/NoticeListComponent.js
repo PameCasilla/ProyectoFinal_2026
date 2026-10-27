@@ -26,7 +26,7 @@ export const NoticeListComponent = props => {
   const getErrorMessage = errorCode => {
     switch (errorCode) {
       case "NEWS_IS_NOT_DRAFT": return "No se puede enviar una noticia en estado ENVIADA"
-      default: "Oops algo salio mal"
+      default: return "Oops algo salio mal"
     }
   }
 

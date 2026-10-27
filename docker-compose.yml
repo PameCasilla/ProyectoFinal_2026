@@ -14,6 +14,13 @@ services:
       - "3307:3306"
     volumes:
       - mysql_authentication_data:/var/lib/mysql
+      - ./sql-sample-data/authentication_sample.sql:/docker-entrypoint-initdb.d/99-sample-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
 
   mysql-backoffice-db:
     container_name: mysql-backoffice-db
@@ -28,6 +35,13 @@ services:
       - "3309:3306"
     volumes:
       - mysql_backoffice_data:/var/lib/mysql
+      - ./sql-sample-data/backoffice_sample.sql:/docker-entrypoint-initdb.d/99-sample-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
 
   mysql-booking-db:
     container_name: mysql-booking-db
@@ -42,15 +56,31 @@ services:
       - "3308:3306"
     volumes:
       - mysql_booking_data:/var/lib/mysql
+      - ./sql-sample-data/booking_sample.sql:/docker-entrypoint-initdb.d/99-sample-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
 
   mongo-db:
     container_name: workffice-mongo-db
     image: mongo:4.2.16-rc0-bionic
     restart: always
+    environment:
+      MONGO_INITDB_DATABASE: workffice
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./nosql-sample-data/mongodb_sample.js:/docker-entrypoint-initdb.d/99-sample-data.js:ro
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
 
   workffice-server:
     container_name: workffice-server
@@ -82,9 +112,11 @@ services:
       MERCADO_PAGO_ACCESS_TOKEN: test-1234
       SERVER_HOST: http://localhost:8080
       JWT_SECRET: workffice-local-development-secret-123456
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY:?Set SENDGRID_API_KEY in the root .env}
-      EMAIL_USERNAME: ${EMAIL_USERNAME:?Set EMAIL_USERNAME in the root .env}
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD:?Set EMAIL_PASSWORD in the root .env}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_USERNAME: ${EMAIL_USERNAME:-workffice2026@gmail.com}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD:-}
+      EMAIL_FROM: ${EMAIL_FROM:-workffice2026@gmail.com}
       CLIENT_HOST: http://localhost:3000
       WAIT_HOSTS: mysql-backoffice-db:3306,mysql-authentication-db:3306,mysql-booking-db:3306,mongo-db:27017
       WAIT_TIMEOUT: 60

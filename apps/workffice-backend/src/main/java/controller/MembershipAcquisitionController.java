@@ -6,9 +6,9 @@ import booking.application.membership_acquisition.MembershipAcquisitionPaymentPr
 import booking.domain.membership_acquisiton.MembershipAcquisitionId;
 import booking.infrastructure.mercadopago.MercadoPagoPaymentNotification;
 import booking.infrastructure.mercadopago.MercadoPagoPaymentResolver;
+import booking.infrastructure.mercadopago.MercadoPagoWebhookVerifier;
 import controller.response.DataResponse;
-
-import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ import static booking.application.dto.membership_acquisition.MembershipAcquisiti
 import static booking.application.dto.membership_acquisition.MembershipAcquisitionError.MEMBERSHIP_ACQUISITION_IS_NOT_PENDING;
 import static booking.application.dto.membership_acquisition.MembershipAcquisitionError.MEMBERSHIP_ACQUISITION_NOT_FOUND;
 import static booking.application.dto.membership_acquisition.MembershipAcquisitionError.MEMBERSHIP_NOT_FOUND;
+import static booking.application.dto.membership_acquisition.MembershipAcquisitionError.MERCADO_PAGO_ERROR;
 import static booking.application.dto.membership_acquisition.MembershipAcquisitionError.NO_AUTHENTICATED_USER;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -30,97 +31,176 @@ import static java.lang.String.format;
 
 @RestController
 public class MembershipAcquisitionController extends BaseController {
+
     @Autowired
     MembershipAcquisitionCreator creator;
+
     @Autowired
     MembershipAcquisitionFinder finder;
+
     @Autowired
     MembershipAcquisitionPaymentPreferenceCreator preferenceCreator;
+
     @Autowired
     MercadoPagoPaymentResolver mercadoPagoPaymentResolver;
 
-    ResponseEntity<DataResponse> membershipAcquisitionForbidden = ResponseEntity
-            .status(HttpStatus.FORBIDDEN)
-            .body(forbidden("MEMBERSHIP_ACQUISITION_FORBIDDEN", "You don't have access to acquire a membership"));
+    @Autowired
+    MercadoPagoWebhookVerifier webhookVerifier;
+
+    ResponseEntity<DataResponse> membershipAcquisitionForbidden =
+            ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(forbidden(
+                            "MEMBERSHIP_ACQUISITION_FORBIDDEN",
+                            "You don't have access to acquire a membership"
+                    ));
 
     ResponseEntity<DataResponse> forbidden = ResponseEntity
             .status(HttpStatus.FORBIDDEN)
             .body(forbidden(
                     "MEMBERSHIP_ACQUISITION_NOT_FOUND",
-                    "The membership acquisition requested is not yours"));
+                    "The membership acquisition requested is not yours"
+            ));
 
     @PostMapping("/api/memberships/{membershipId}/acquisitions/")
-    public ResponseEntity<?> acquireMembership(@PathVariable String membershipId) {
+    public ResponseEntity<?> acquireMembership(
+            @PathVariable String membershipId
+    ) {
         try {
-            var membershipAcquisitionId = new MembershipAcquisitionId();
-            var createdResponse = ResponseEntity.status(HttpStatus.CREATED)
-                    .body((DataResponse) entityCreated(format("/api/membership_acquisitions/%s/",
-                            membershipAcquisitionId)));
-            ResponseEntity<DataResponse> membershipNotFound = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(notFound("MEMBERSHIP_NOT_FOUND", "The membership requested does not exist"));
-            return creator.create(membershipAcquisitionId, membershipId)
+            var membershipAcquisitionId =
+                    new MembershipAcquisitionId();
+
+            var createdResponse = ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body((DataResponse) entityCreated(format(
+                            "/api/membership_acquisitions/%s/",
+                            membershipAcquisitionId
+                    )));
+
+            ResponseEntity<DataResponse> membershipNotFound =
+                    ResponseEntity
+                            .status(HttpStatus.NOT_FOUND)
+                            .body(notFound(
+                                    "MEMBERSHIP_NOT_FOUND",
+                                    "The membership requested does not exist"
+                            ));
+
+            return creator.create(
+                            membershipAcquisitionId,
+                            membershipId
+                    )
                     .map(v -> createdResponse)
                     .getOrElseGet(error -> Match(error).of(
-                            Case($(NO_AUTHENTICATED_USER), membershipAcquisitionForbidden),
-                            Case($(MEMBERSHIP_NOT_FOUND), membershipNotFound)
+                            Case(
+                                    $(NO_AUTHENTICATED_USER),
+                                    membershipAcquisitionForbidden
+                            ),
+                            Case(
+                                    $(MEMBERSHIP_NOT_FOUND),
+                                    membershipNotFound
+                            )
                     ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(invalid("INVALID_MEMBERSHIP_ID", "The membership id provided is invalid"));
+            return ResponseEntity.badRequest().body(invalid(
+                    "INVALID_MEMBERSHIP_ID",
+                    "The membership id provided is invalid"
+            ));
         }
     }
 
     @GetMapping("/api/membership_acquisitions/")
     public ResponseEntity<?> myMembershipAcquisitions() {
-        return finder
-                .find()
-                .map(membershipAcquisitions -> ResponseEntity.ok((DataResponse) entityResponse(membershipAcquisitions)))
+        return finder.find()
+                .map(membershipAcquisitions -> ResponseEntity.ok(
+                        (DataResponse) entityResponse(
+                                membershipAcquisitions
+                        )
+                ))
                 .getOrElseGet(error -> Match(error).of(
-                        Case($(MEMBERSHIP_ACQUISITION_FORBIDDEN), forbidden)
+                        Case(
+                                $(MEMBERSHIP_ACQUISITION_FORBIDDEN),
+                                forbidden
+                        )
                 ));
     }
 
     @PostMapping("/api/membership_acquisitions/{id}/mp_preferences/")
-    public ResponseEntity<?> createPreference(@PathVariable String id) {
+    public ResponseEntity<?> createPreference(
+            @PathVariable String id
+    ) {
         try {
-            var membershipAcquisitionId = MembershipAcquisitionId.fromString(id);
+            var membershipAcquisitionId =
+                    MembershipAcquisitionId.fromString(id);
+
             ResponseEntity<DataResponse> notFound = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(notFound(
                             "MEMBERSHIP_ACQUISITION_NOT_FOUND",
-                            "The membership acquisition requested does not exist"));
-            ResponseEntity<DataResponse> isNotPending = ResponseEntity
-                    .badRequest()
-                    .body(invalid(
+                            "The membership acquisition requested does not exist"
+                    ));
+
+            ResponseEntity<DataResponse> isNotPending =
+                    ResponseEntity.badRequest().body(invalid(
                             "MEMBERSHIP_ACQUISITION_NOT_PENDING",
-                            "The membership acquisition requested is not pending"));
+                            "The membership acquisition requested is not pending"
+                    ));
+
+            ResponseEntity<DataResponse> mercadoPagoError =
+                    ResponseEntity.badRequest().body(invalid(
+                            "MERCADO_PAGO_ERROR",
+                            "Could not create payment preference"
+                    ));
+
             return preferenceCreator.create(membershipAcquisitionId)
                     .map(paymentPreference -> ResponseEntity
                             .status(HttpStatus.CREATED)
-                            .body((DataResponse) entityResponse(paymentPreference)))
+                            .body((DataResponse) entityResponse(
+                                    paymentPreference
+                            )))
                     .getOrElseGet(error -> Match(error).of(
-                            Case($(MEMBERSHIP_ACQUISITION_NOT_FOUND), notFound),
-                            Case($(MEMBERSHIP_ACQUISITION_FORBIDDEN), forbidden),
-                            Case($(MEMBERSHIP_ACQUISITION_IS_NOT_PENDING), isNotPending)
+                            Case(
+                                    $(MEMBERSHIP_ACQUISITION_NOT_FOUND),
+                                    notFound
+                            ),
+                            Case(
+                                    $(MEMBERSHIP_ACQUISITION_FORBIDDEN),
+                                    forbidden
+                            ),
+                            Case(
+                                    $(MEMBERSHIP_ACQUISITION_IS_NOT_PENDING),
+                                    isNotPending
+                            ),
+                            Case(
+                                    $(MERCADO_PAGO_ERROR),
+                                    mercadoPagoError
+                            )
                     ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(invalid("INVALID_MEMBERSHIP_ACQUISITION_ID", "The id provided is invalid"));
+            return ResponseEntity.badRequest().body(invalid(
+                    "INVALID_MEMBERSHIP_ACQUISITION_ID",
+                    "The id provided is invalid"
+            ));
         }
     }
 
     @PostMapping("/api/membership_acquisitions/{membershipAcquisitionId}/mp_notifications/")
     public ResponseEntity<?> mpNotification(
             @PathVariable String membershipAcquisitionId,
-            @RequestBody MercadoPagoPaymentNotification notification
+            @RequestBody MercadoPagoPaymentNotification notification,
+            HttpServletRequest request
     ) {
-        LoggerFactory.getLogger(getClass()).info(format("MEMBERSHIP_ACQUISITION_ID: %s", membershipAcquisitionId));
-        LoggerFactory.getLogger(getClass()).info(notification.toString());
-        if (notification.getAction().equals("payment.created") || notification.getAction().equals("payment.updated"))
-            mercadoPagoPaymentResolver.handleNotificationForMembershipAcquisition(membershipAcquisitionId,
-                    notification);
+        webhookVerifier.verify(request, notification);
+
+        if ("payment".equals(notification.getType()) &&
+                ("payment.created".equals(notification.getAction()) ||
+                 "payment.updated".equals(notification.getAction()))) {
+            mercadoPagoPaymentResolver
+                    .handleNotificationForMembershipAcquisition(
+                            membershipAcquisitionId,
+                            notification
+                    );
+        }
+
         return ResponseEntity.ok().build();
     }
 }

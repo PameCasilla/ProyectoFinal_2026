@@ -30,11 +30,6 @@ public class CollaboratorInvitationTemplate implements Template {
     }
 
     @Override
-    public String from() {
-        return "maximiliano.pivac@live.com";
-    }
-
-    @Override
     public HashMap<String, String> substitutionData() {
         return new HashMap<>() {{
             put("url", format("%s/auth/collaborator/activate/?token=%s", host, confirmationToken));
@@ -44,7 +39,11 @@ public class CollaboratorInvitationTemplate implements Template {
 
     @Override
     public String plainTextBody() {
-        String link = format("%s/accept_invitation/?token=%s", host, confirmationToken);
-        return "Para unirte a la sucursal por favor haz click en el siguiente link " + link;
+        String link = substitutionData().get("url");
+        return format(
+                "Fuiste invitado para colaborar en %s. Para aceptar la invitacion, visita: %s",
+                officeBranchName,
+                link
+        );
     }
 }

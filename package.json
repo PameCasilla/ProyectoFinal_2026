@@ -2,12 +2,12 @@
   "name": "workffice-local-dev",
   "private": true,
   "scripts": {
-    "dev": "node scripts/start-dev-terminals.js",
-    "dev:docker": "docker compose up --build",
-    "dev:local": "node scripts/start-dev-terminals.js",
+    "dev": "npm run dev:local",
+    "dev:docker": "cd apps/workffice-backend && ./gradlew bootJar --no-daemon && cd ../.. && docker compose --env-file apps/workffice-backend/.env up --build",
+    "dev:local": "npm run dev:db && node scripts/start-dev-terminals.js",
     "dev:frontend": "npm --prefix apps/workffice-frontend start",
     "dev:backend": "node scripts/run-backend-dev.js",
-    "dev:db": "docker compose up -d mysql-authentication-db mysql-backoffice-db mysql-booking-db mongo-db",
+    "dev:db": "docker compose --env-file apps/workffice-backend/.env up -d --wait mysql-authentication-db mysql-backoffice-db mysql-booking-db mongo-db",
     "dev:down": "docker compose down"
   },
   "devDependencies": {

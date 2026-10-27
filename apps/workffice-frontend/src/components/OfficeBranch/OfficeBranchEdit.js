@@ -249,7 +249,6 @@ export const OfficeBranchEdit = ({ hideNotification, notification, officeBranch,
                                 <Button
                                     className="btn-round"
                                     color="danger"
-                                    fill
                                     onClick={() => successAlert()}
                                 >
                                     Dar de baja
